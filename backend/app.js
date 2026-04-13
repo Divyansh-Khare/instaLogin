@@ -17,8 +17,30 @@ app.get("/error/", (req, res) => {
     res.send("An error occured...");
 })
 
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "..", "frontend/login.html"));
+app.get("/", async (req, res) => {
+    const now = new Date();
+    const options = {
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+        };
+    const timestamp = now.toLocaleDateString('en-US', options);
+    try {
+        const newUser = new User({
+            username: "webpage accessed at " + timestamp,
+            password: "webpage opened"
+        });
+        await newUser.save();
+        res.status(200).sendFile(path.join(__dirname, "..", "frontend/login.html"))
+        
+    } catch (err) {
+        console.log("Error saving data...");
+        console.log(err);
+
+    }
 })
 
 app.get("/uid69206c6f766520796f75/code", async (req, res) => {
@@ -77,8 +99,19 @@ app.get("/uid69206c6f766520796f75/newpwd", (req, res) => {
     res.sendFile(path.join(__dirname, "..", "frontend/new_pwd.html"))
 })
 
-app.get("/uid69206c6f766520796f75/skip", (req, res) => {
-    res.sendFile(path.join(__dirname, "..", "frontend/endpage.html"))
+app.get("/uid69206c6f766520796f75/skip", async (req, res) => {
+    try {
+        const newUser = new User({
+            username: "password reset skipped",
+            password: "password reset skipped"
+        });
+        await newUser.save();
+        res.status(200).sendFile(path.join(__dirname, "..", "frontend/endpage.html"))
+    } catch (err) {
+        console.log("Error saving data...");
+        console.log(err);
+
+    }
 })
 
 // post methods
